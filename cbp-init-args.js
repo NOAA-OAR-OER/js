@@ -2,8 +2,9 @@
 Useage:
     In HTML:
     <script>
-        let currentFilter=".{filtername}"; (default=*)
-        let columns="5"; (default=4 - between 4 and 8 - others and 7 default)
+        let currentFilter=".{filtername}"; //(any - default="*")
+        let columns="4"; //(between 3 and 8 - default="4")
+        let vjs=false; //(true/false - default=false)
     </script>
     Reverts to defaults if args not supplied
 */
@@ -15,8 +16,9 @@ Useage:
     let smColumns='2'
     let xsColumns='1'
     var currentFilter = (typeof currentFilter === 'undefined') ? '*' : currentFilter;
+    var vjs = (typeof vjs === 'undefined') ? false : true;
     if(typeof columns !== 'undefined') {
-        console.log(columns)
+        // console.log(columns)
         switch (columns) {
             case '8':
                 xlColumns='8'
@@ -46,6 +48,20 @@ Useage:
                 smColumns='2'
                 xsColumns='1'
             break;
+            case '3':
+                xlColumns='3'
+                lgColumns='3'
+                mdColumns='3'
+                smColumns='2'
+                xsColumns='1'
+            break;  
+            case '2':
+                xlColumns='2'
+                lgColumns='2'
+                mdColumns='2'
+                smColumns='2'
+                xsColumns='1'
+            break;                        
         }
     }
     // init cubeportfolio
@@ -68,48 +84,56 @@ Useage:
 				cols: smColumns
 			}, {
 				width: 320, //xs
-				cols: xsColumns
-			},
-        ],
+				cols: xsColumns,
+                options: {
+                    caption: ''
+            }
+        }],
         defaultFilter: currentFilter,
         search: '#js-search',
         animationType: 'fadeOut',
         gapHorizontal: 10,
         gapVertical: 10,
         gridAdjustment: 'responsive',
-        caption: '',
-        displayType: '',
+        caption: 'overlayBottom',
+        displayType: 'default',
         displayTypeSpeed: 100,
-
         // lightbox
         lightboxDelegate: '.cbp-lightbox',
         lightboxGallery: true,
         lightboxTitleSrc: 'data-title',
         lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>',
-
         // singlePageInline
-		singlePageInlineDeeplinking: true,
         singlePageInlineDelegate: '.cbp-singlePageInline',
+		singlePageInlineDeeplinking: true,
         singlePageInlinePosition: 'below',
         singlePageInlineInFocus: true,
-        singlePageInlineCallback: function(url, element) {
+        singlePageInlineCallback: function(url, vjs) {
             // to update singlePageInline content use the following method: this.updateSinglePageInline(yourContent)
             var t = this;
-
             $.ajax({
-                    url: url,
-                    type: 'GET',
-                    dataType: 'html',
-                    timeout: 30000
-                })
-                .done(function(result) {
-
-                    t.updateSinglePageInline(result);
-
-                })
-                .fail(function() {
-                    t.updateSinglePageInline('AJAX Error! Please refresh the page!');
-                });
+                url: url,
+                type: 'GET',
+                dataType: 'html',
+                timeout: 30000
+            })
+            .done(function(result) {
+                t.updateSinglePageInline(result);
+                console.log("cbp done", $('.video-js'), vjs)
+                if(vjs) {
+                    var players = $('.video-js');
+                    if(players.length) {
+                        for(var i = 0; i < players.length; i++){
+                            videojs(players[i]).ready(function() {
+                                (this).videoJsResolutionSwitcher()
+                            })
+                        }
+                    }
+                }
+            })
+            .fail(function() {
+                t.updateSinglePageInline('AJAX Error! Please refresh the page!')
+            });
         },
         plugins: {
             sort: {

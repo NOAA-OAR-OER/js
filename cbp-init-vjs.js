@@ -4,39 +4,41 @@
     // init cubeportfolio
     $('#js-grid-lightbox-gallery').cubeportfolio({
         filters: '#js-filters-lightbox-gallery',
+        loadMore: '#js-loadMore-lightbox-gallery',
+        loadMoreAction: 'click',
         layoutMode: 'grid',
+        mediaQueries: [{
+                width: 1500,
+                cols: 3
+            }, {
+                width: 1100,
+                cols: 3
+            }, {
+                width: 800,
+                cols: 3
+            }, {
+                width: 480,
+                cols: 3
+            }, {
+                width: 400,
+                cols: 2
+            }, {
+                width: 350,
+                cols: 1
+
+            }, {
+                width: 300,
+                cols: 1,
+                options: {
+                    caption: ''
+            }
+        }],
         defaultFilter: '*',
-        search: '#js-search',         
+        search: '#js-search',
         animationType: 'fadeOut',
         gapHorizontal: 10,
         gapVertical: 10,
         gridAdjustment: 'responsive',
-        mediaQueries: [{
-            width: 1500,
-            cols: 3
-        }, {
-            width: 1100,
-            cols: 3
-        }, {
-            width: 800,
-            cols: 3
-        }, {
-            width: 480,
-            cols: 3
-		 }, {
-            width: 400,
-            cols: 2
-			 }, {
-            width: 350,
-            cols: 1
-
-        }, {
-            width: 300,
-            cols: 1,
-            options: {
-                caption: ''
-            }
-        }],
         caption: 'overlayBottom',
         displayType: 'default',
         displayTypeSpeed: 100,
@@ -54,25 +56,25 @@
             // to update singlePageInline content use the following method: this.updateSinglePageInline(yourContent)
             var t = this;
             $.ajax({
-                    url: url,
-                    type: 'GET',
-                    dataType: 'html',
-                    timeout: 30000
-                })
-                .done(function(result) {
-                    t.updateSinglePageInline(result);
-                    // console.log("cbp done", $('.video-js'))
-                    var players = $('.video-js');
-                    if(players.length) {
-                        for(var i = 0; i < players.length; i++){
-                            videojs(players[i]).ready(function() {
-                                (this).videoJsResolutionSwitcher()
-                            })
-                        }
+                url: url,
+                type: 'GET',
+                dataType: 'html',
+                timeout: 30000
+            })
+            .done(function(result) {
+                t.updateSinglePageInline(result);
+                // console.log("cbp done", $('.video-js'))
+                var players = $('.video-js');
+                if(players.length) {
+                    for(var i = 0; i < players.length; i++){
+                        videojs(players[i]).ready(function() {
+                            (this).videoJsResolutionSwitcher()
+                        })
                     }
-                })
-                .fail(function() {
-                    t.updateSinglePageInline('AJAX Error! Please refresh the page!')
+                }
+            })
+            .fail(function() {
+                t.updateSinglePageInline('AJAX Error! Please refresh the page!')
             });
         },
         plugins: {
